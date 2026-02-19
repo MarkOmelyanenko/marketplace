@@ -82,7 +82,7 @@ public class PaymentService {
      * outbox events. Transactional. On insufficient balance, returns FAILED (does not throw)
      * so the transaction commits and payment.failed can be consumed by offer-service.
      *
-     * @param request       payment details; offerId required
+     * @param request      payment details; offerId required
      * @param ownerType    e.g. PARTNER or BUYER
      * @param ownerId      owner identifier (used with partnerId for idempotency lookup)
      * @param partnerId    may be null for buyer flow; empty string stored for backward compatibility

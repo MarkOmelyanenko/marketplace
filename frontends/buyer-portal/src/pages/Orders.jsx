@@ -87,6 +87,7 @@ export default function Orders() {
       key: "status",
       label: "Status",
       render: (_, row) => <StatusPill status={row.status} />,
+      cellStyle: () => ({ textAlign: "center" }),
     },
     {
       key: "createdAt",

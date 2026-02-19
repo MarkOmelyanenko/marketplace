@@ -25,7 +25,7 @@ public class ProviderService {
     }
 
     /**
-     * Creates a simulated payment and triggers async webhook. Deterministic: amountCents divisible by 10 → FAILED.
+     * Creates a simulated payment and triggers async webhook. Deterministic: amountCents divisible by 10 -> FAILED.
      *
      * @param request payment details from payments-service
      * @return response with provider payment id

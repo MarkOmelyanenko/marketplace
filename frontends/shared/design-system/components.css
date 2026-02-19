@@ -33,7 +33,10 @@
   border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
-  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    border-color 0.15s;
 }
 .ds-btn:focus-visible {
   outline: var(--focus-ring);
@@ -100,7 +103,9 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 .ds-input::placeholder,
 .ds-textarea::placeholder {
@@ -147,6 +152,7 @@
   font-size: var(--text-small);
   font-weight: var(--font-weight-semibold);
   border-radius: 999px;
+  white-space: nowrap;
 }
 .ds-pill--success {
   background: var(--color-success-subtle);
@@ -264,8 +270,12 @@
   border-radius: var(--radius-sm);
 }
 @keyframes ds-skeleton {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ── Empty state ─────────────────────────────────────────────── */
@@ -397,12 +407,24 @@
 .ds-toast button {
   font-family: inherit;
 }
-.ds-toast--success { border-left-color: var(--color-success); }
-.ds-toast--error { border-left-color: var(--color-error); }
-.ds-toast--info { border-left-color: var(--color-info); }
+.ds-toast--success {
+  border-left-color: var(--color-success);
+}
+.ds-toast--error {
+  border-left-color: var(--color-error);
+}
+.ds-toast--info {
+  border-left-color: var(--color-info);
+}
 @keyframes ds-toast-in {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* ── Confirm dialog (modal) ──────────────────────────────────── */
@@ -417,8 +439,12 @@
   animation: ds-overlay-in 0.15s ease-out;
 }
 @keyframes ds-overlay-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .ds-dialog {
   font-family: var(--font-family);
@@ -431,8 +457,14 @@
   animation: ds-dialog-in 0.2s ease-out;
 }
 @keyframes ds-dialog-in {
-  from { opacity: 0; transform: scale(0.95) translateY(8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 .ds-dialog__title {
   font-size: var(--text-h2);
@@ -455,7 +487,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-family: "SF Mono", "Fira Code", monospace;
   font-size: var(--text-small);
   cursor: pointer;
   padding: 2px var(--space-2);
@@ -488,8 +520,14 @@
   animation: ds-tooltip-in 0.15s ease-out;
 }
 @keyframes ds-tooltip-in {
-  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* ── Pagination ──────────────────────────────────────────────── */
@@ -514,7 +552,9 @@
   background: var(--color-surface);
   color: var(--color-text);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 .ds-pagination__btn:hover:not(:disabled) {
   background: var(--color-neutral-subtle);
@@ -587,7 +627,7 @@
 }
 .ds-onboarding__dismiss:hover {
   color: var(--color-text);
-  background: rgba(0,0,0,0.05);
+  background: rgba(0, 0, 0, 0.05);
 }
 .ds-onboarding__title {
   font-size: var(--text-h2);

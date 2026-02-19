@@ -51,13 +51,13 @@ class RateLimitingFilterTest {
         MockHttpServletRequest req = new MockHttpServletRequest("GET", "/api/offers/v1/offers");
         req.setRemoteAddr("10.0.0.1");
 
-        // First two requests succeed (each needs its own chain and response)
+        // first two requests succeed (each needs its own chain and response)
         MockHttpServletResponse res1 = new MockHttpServletResponse();
         filter.doFilter(req, res1, new MockFilterChain());
         MockHttpServletResponse res2 = new MockHttpServletResponse();
         filter.doFilter(req, res2, new MockFilterChain());
 
-        // Third request is rate limited
+        // third request is rate limited
         MockHttpServletResponse res3 = new MockHttpServletResponse();
         filter.doFilter(req, res3, new MockFilterChain());
 

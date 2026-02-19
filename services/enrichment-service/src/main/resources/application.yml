@@ -1,7 +1,7 @@
 server:
   port: 8083
 
-# Groq (free tier, no local RAM): set GROQ_API_KEY to enable AI title/description suggestions (get key at console.groq.com)
+# Groq: set GROQ_API_KEY to enable AI title/description suggestions
 app:
   groq:
     api-key: ${GROQ_API_KEY:-}

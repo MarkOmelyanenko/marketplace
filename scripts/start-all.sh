@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# Запуск всього стеку (інфра + бекенди + фронтенди) одним скриптом через Docker.
-# Потрібен Docker і Docker Compose. Запускати з кореня репозиторію: ./scripts/start-all.sh
 
 set -e
 cd "$(dirname "$0")/.."

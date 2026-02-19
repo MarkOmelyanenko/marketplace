@@ -40,7 +40,7 @@ class OfferRepositoryIntegrationTest {
     
     @Test
     void shouldSaveAndRetrieveOffer() {
-        // Given
+        // given
         Offer offer = new Offer();
         offer.setId(UUID.randomUUID());
         offer.setPartnerId("partner-123");
@@ -50,11 +50,11 @@ class OfferRepositoryIntegrationTest {
         offer.setCreatedAt(OffsetDateTime.now());
         offer.setUpdatedAt(OffsetDateTime.now());
         
-        // When
+        // when
         Offer saved = offerRepository.save(offer);
         Offer found = offerRepository.findById(saved.getId()).orElse(null);
         
-        // Then
+        // then
         assertThat(found).isNotNull();
         assertThat(found.getPartnerId()).isEqualTo("partner-123");
         assertThat(found.getTitle()).isEqualTo("Test Offer");
@@ -63,7 +63,7 @@ class OfferRepositoryIntegrationTest {
     
     @Test
     void shouldFindOffersByPartnerId() {
-        // Given
+        // given
         Offer offer1 = new Offer();
         offer1.setId(UUID.randomUUID());
         offer1.setPartnerId("partner-123");
@@ -85,11 +85,11 @@ class OfferRepositoryIntegrationTest {
         offerRepository.save(offer1);
         offerRepository.save(offer2);
         
-        // When
+        // when
         var offers = offerRepository.findByPartnerIdOrderByCreatedAtDesc("partner-123");
         
-        // Then
+        // then
         assertThat(offers).hasSize(2);
-        assertThat(offers.get(0).getTitle()).isEqualTo("Offer 2"); // Most recent first
+        assertThat(offers.get(0).getTitle()).isEqualTo("Offer 2"); // most recent first
     }
 }

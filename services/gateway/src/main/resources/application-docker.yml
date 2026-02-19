@@ -1,4 +1,4 @@
-# Profile for Docker Compose: route URIs use service names (not localhost)
+# profile for docker compose: route URIs use service names
 spring:
   cloud:
     gateway:

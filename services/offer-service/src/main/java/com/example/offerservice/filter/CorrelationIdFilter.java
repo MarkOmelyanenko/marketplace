@@ -27,22 +27,22 @@ public class CorrelationIdFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
-        // Get correlation ID from header or generate new one
+        // get correlation ID from header or generate new one
         String correlationId = httpRequest.getHeader(CORRELATION_ID_HEADER);
         if (correlationId == null || correlationId.isBlank()) {
             correlationId = UUID.randomUUID().toString();
         }
         
-        // Add to MDC
+        // add to MDC
         MDC.put(CORRELATION_ID_MDC_KEY, correlationId);
         
         try {
-            // Add to response header
+            // add to response header
             httpResponse.setHeader(CORRELATION_ID_HEADER, correlationId);
             
             chain.doFilter(request, response);
         } finally {
-            // Clean up MDC
+            // clean up MDC
             MDC.clear();
         }
     }

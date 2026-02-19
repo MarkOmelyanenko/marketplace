@@ -66,7 +66,7 @@ class WebhookIntegrationTest {
     
     @BeforeEach
     void setUp() {
-        // Create a test payment
+        // create a test payment
         testPayment = new Payment();
         testPayment.setId(UUID.randomUUID());
         testPayment.setPartnerId("partner-123");
@@ -84,7 +84,7 @@ class WebhookIntegrationTest {
     
     @Test
     void shouldProcessWebhookWithValidSignature() throws Exception {
-        // Given
+        // given
         ProviderWebhookRequest request = new ProviderWebhookRequest();
         request.setProviderPaymentId("psp_12345");
         request.setStatus("CAPTURED");
@@ -104,24 +104,24 @@ class WebhookIntegrationTest {
         
         String signature = computeSignature(jsonBody, "test-secret");
         
-        // When
+        // when
         ResponseEntity<Map<String, String>> response = webhookController.handleProviderWebhook(
             request, providerEventId, signature, null);
         
-        // Then
+        // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         
-        // Verify payment status updated
+        // verify payment status updated
         Payment updated = paymentRepository.findById(testPayment.getId()).orElseThrow();
         assertThat(updated.getStatus()).isEqualTo("CAPTURED");
         
-        // Verify provider event stored
+        // verify provider event stored
         assertThat(providerEventRepository.existsById(providerEventId)).isTrue();
     }
     
     @Test
     void shouldRejectWebhookWithInvalidSignature() throws Exception {
-        // Given
+        // given
         ProviderWebhookRequest request = new ProviderWebhookRequest();
         request.setProviderPaymentId("psp_12345");
         request.setStatus("CAPTURED");
@@ -131,17 +131,17 @@ class WebhookIntegrationTest {
         
         String invalidSignature = "invalid-signature";
         
-        // When
+        // when
         ResponseEntity<Map<String, String>> response = webhookController.handleProviderWebhook(
             request, providerEventId, invalidSignature, null);
         
-        // Then
+        // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
     
     @Test
     void shouldBeIdempotentWhenProcessingSameWebhookTwice() throws Exception {
-        // Given
+        // given
         ProviderWebhookRequest request = new ProviderWebhookRequest();
         request.setProviderPaymentId("psp_12345");
         request.setStatus("CAPTURED");
@@ -161,21 +161,21 @@ class WebhookIntegrationTest {
         
         String signature = computeSignature(jsonBody, "test-secret");
         
-        // When - first call
+        // when - first call
         ResponseEntity<Map<String, String>> response1 = webhookController.handleProviderWebhook(
             request, providerEventId, signature, null);
         
-        // Then - first call succeeds
+        // then - first call succeeds
         assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.OK);
         
-        // When - second call with same event ID
+        // when - second call with same event ID
         ResponseEntity<Map<String, String>> response2 = webhookController.handleProviderWebhook(
             request, providerEventId, signature, null);
         
-        // Then - second call also succeeds (idempotent)
+        // then - second call also succeeds (idempotent)
         assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
         
-        // Verify only one provider event stored
+        // verify only one provider event stored
         assertThat(providerEventRepository.findAll()).hasSize(1);
     }
     

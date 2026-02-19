@@ -1,4 +1,3 @@
--- Wallets: one per owner (partner or buyer), used to simulate balance/deposits
 CREATE TABLE wallets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     owner_type VARCHAR(32) NOT NULL,
@@ -12,7 +11,6 @@ CREATE TABLE wallets (
 
 CREATE INDEX idx_wallets_owner ON wallets(owner_type, owner_id);
 
--- Audit trail for deposits and withdrawals
 CREATE TABLE wallet_transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     wallet_id UUID NOT NULL REFERENCES wallets(id) ON DELETE CASCADE,

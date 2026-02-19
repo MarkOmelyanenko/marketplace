@@ -21,8 +21,8 @@ public class AiEnrichmentService {
 
     private static final Logger logger = LoggerFactory.getLogger(AiEnrichmentService.class);
 
-    private static final String[] TITLE_PREFIXES = { "🔥 ", "✨ ", "⭐ ", "💡 ", "🏷️ ", "✓ " };
-    private static final String[] BENEFIT_HEADERS = { "✅ Benefits:", "📌 Highlights:", "👍 Why choose this:" };
+    private static final String[] TITLE_PREFIXES = { "✓ " };
+    private static final String[] BENEFIT_HEADERS = { "Benefits:", "Highlights:", "Why choose this:" };
 
     private final GroqEnrichmentClient groqEnrichmentClient;
 

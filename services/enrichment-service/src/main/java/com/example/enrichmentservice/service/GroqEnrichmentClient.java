@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Calls Groq API (OpenAI-compatible, free tier) to generate title and description suggestions.
+ * Calls Groq API to generate title and description suggestions.
  * No local RAM usage — runs in the cloud. Returns null if API key is not set or request fails.
  */
 @Component
