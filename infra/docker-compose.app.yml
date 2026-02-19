@@ -1,0 +1,104 @@
+services:
+  gateway:
+    build:
+      context: ../services/gateway
+      dockerfile: Dockerfile
+    container_name: pet-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pet-postgres:5432/postgres
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=pet-kafka:9092
+    networks:
+      - pet-network
+
+  offer-service:
+    build:
+      context: ../services/offer-service
+      dockerfile: Dockerfile
+    container_name: pet-offer-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pet-postgres:5432/offer_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=pet-kafka:9092
+      - PAYMENT_SERVICE_URL=http://payments-service:8082
+    networks:
+      - pet-network
+
+  payments-service:
+    build:
+      context: ../services/payments-service
+      dockerfile: Dockerfile
+    container_name: pet-payments-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pet-postgres:5432/payment_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=pet-kafka:9092
+      - PROVIDER_BASE_URL=http://provider-simulator:8084
+      - PROVIDER_WEBHOOK_SECRET=dev-secret
+    networks:
+      - pet-network
+
+  enrichment-service:
+    build:
+      context: ../services/enrichment-service
+      dockerfile: Dockerfile
+    container_name: pet-enrichment-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=pet-kafka:9092
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - GROQ_MODEL=${GROQ_MODEL:-llama-3.1-8b-instant}
+    networks:
+      - pet-network
+
+  provider-simulator:
+    build:
+      context: ../services/provider-simulator
+      dockerfile: Dockerfile
+    container_name: pet-provider-simulator
+    ports:
+      - "8084:8084"
+    environment:
+      - PAYMENTS_WEBHOOK_URL=http://payments-service:8082/v1/webhooks/provider
+      - PROVIDER_WEBHOOK_SECRET=dev-secret
+    depends_on:
+      - payments-service
+    networks:
+      - pet-network
+
+  partner-portal:
+    build:
+      context: ../frontends
+      dockerfile: partner-portal/Dockerfile
+    container_name: pet-partner-portal
+    ports:
+      - "3000:80"
+    depends_on:
+      - gateway
+    networks:
+      - pet-network
+
+  ops-dashboard:
+    build:
+      context: ../frontends
+      dockerfile: ops-dashboard/Dockerfile
+    container_name: pet-ops-dashboard
+    ports:
+      - "3001:80"
+    depends_on:
+      - gateway
+    networks:
+      - pet-network
+
+networks:
+  pet-network:
+    external: true
+    name: infra_pet-network

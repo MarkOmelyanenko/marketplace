@@ -1,0 +1,62 @@
+# --- IDE ---
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+*.code-workspace
+
+# --- Maven ---
+target/
+pom.xml.tag
+pom.releaseBackup
+.releaseBackup
+
+# --- Gradle (if ever used) ---
+.gradle/
+build/
+
+# --- Node / frontend ---
+node_modules/
+**/node_modules/
+**/dist/
+**/.vite/
+.npm
+.eslintcache
+*.tsbuildinfo
+package-lock.json.bak
+yarn.lock.bak
+
+# --- Environment and secrets ---
+.env
+.env.*
+!.env.example
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# --- Logs and temp ---
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*~
+
+# --- Local deployment (not committed) ---
+deploy-local/
+
+# --- Java / JVM ---
+*.class
+hs_err_pid*
+replay_pid*
+
+# --- Optional: local Docker override (uncomment if you use one) ---
+# docker-compose.override.yml

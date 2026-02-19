@@ -1,0 +1,14 @@
+# Build context must be frontends/ (parent) so shared/design-system is available.
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY partner-portal/package*.json ./
+RUN npm ci
+COPY shared /shared
+COPY partner-portal/ .
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY partner-portal/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

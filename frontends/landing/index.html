@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Allegro Mini Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Design tokens – match shared/design-system/tokens.css (light theme) */
+      :root {
+        --color-bg: #f6f6f6;
+        --color-surface: #ffffff;
+        --color-border: #e0e0e0;
+        --color-text: #1a1a1a;
+        --color-text-muted: #666666;
+        --color-accent: #e95420;
+        --color-accent-hover: #c94a1a;
+        --color-accent-subtle: #fef3ef;
+        --color-info: #0d6b9e;
+        --color-info-subtle: #e8f4fa;
+        --color-neutral-subtle: #f0f0f0;
+        --font-family: "Inter", system-ui, -apple-system, sans-serif;
+        --text-h1: 1.75rem;
+        --text-h2: 1.25rem;
+        --text-body: 1rem;
+        --text-small: 0.875rem;
+        --text-caption: 0.75rem;
+        --font-weight-medium: 500;
+        --font-weight-semibold: 600;
+        --line-height-tight: 1.25;
+        --line-height-body: 1.5;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-8: 48px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --focus-ring: 2px solid var(--color-accent);
+        --focus-offset: 2px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--font-family);
+        font-size: var(--text-body);
+        line-height: var(--line-height-body);
+        color: var(--color-text);
+        background: var(--color-bg);
+      }
+
+      /* Nav – match ds-nav */
+      .landing-nav {
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: var(--shadow-sm);
+      }
+      .landing-nav__inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--space-3) var(--space-4);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .landing-nav__brand {
+        font-weight: var(--font-weight-semibold);
+        font-size: 1.0625rem;
+        color: var(--color-text);
+        text-decoration: none;
+      }
+      .landing-nav__brand:hover {
+        color: var(--color-accent);
+      }
+      .landing-nav__brand:focus-visible {
+        outline: var(--focus-ring);
+        outline-offset: var(--focus-offset);
+        border-radius: var(--radius-md);
+      }
+
+      /* Page + container – match ds-page / ds-container */
+      .landing-main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--space-8) var(--space-4);
+      }
+      .landing-title {
+        font-size: var(--text-h1);
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--line-height-tight);
+        margin: 0 0 var(--space-2);
+      }
+      .landing-subtitle {
+        color: var(--color-text-muted);
+        margin: 0 0 var(--space-6);
+        font-size: var(--text-body);
+      }
+
+      /* Cards grid */
+      .landing-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-5);
+      }
+      .landing-card {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        background: var(--color-surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        padding: var(--space-5);
+        border: 1px solid transparent;
+        transition:
+          background 0.15s,
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .landing-card:hover {
+        background: var(--color-surface);
+        border-color: var(--color-accent);
+        box-shadow:
+          var(--shadow-md),
+          0 0 0 1px var(--color-accent-subtle);
+      }
+      .landing-card:focus-visible {
+        outline: var(--focus-ring);
+        outline-offset: var(--focus-offset);
+      }
+      .landing-card__badge {
+        display: inline-block;
+        padding: 4px var(--space-3);
+        font-size: var(--text-caption);
+        font-weight: var(--font-weight-semibold);
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        color: var(--color-info);
+        background: var(--color-info-subtle);
+        border-radius: 999px;
+        margin-bottom: var(--space-3);
+      }
+      .landing-card__title {
+        font-size: var(--text-h2);
+        font-weight: var(--font-weight-semibold);
+        margin: 0 0 var(--space-2);
+        line-height: var(--line-height-tight);
+      }
+      .landing-card__desc {
+        margin: 0;
+        font-size: var(--text-small);
+        line-height: var(--line-height-body);
+        color: var(--color-text-muted);
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="landing-nav">
+      <div class="landing-nav__inner">
+        <span class="landing-nav__brand">Allegro Mini Platform</span>
+      </div>
+    </nav>
+
+    <main class="landing-main">
+      <h1 class="landing-title">Choose a portal to get started</h1>
+      <p class="landing-subtitle">
+        Partner portal, buyer catalog, or ops dashboard.
+      </p>
+
+      <div class="landing-cards">
+        <a class="landing-card" id="link-partner" href="">
+          <span class="landing-card__badge">Sellers</span>
+          <h2 class="landing-card__title">Partner Portal</h2>
+          <p class="landing-card__desc">
+            Create and manage offers, view statistics on money earned, top up
+            your wallet. Use AI suggestions to improve your descriptions.
+          </p>
+        </a>
+        <a class="landing-card" id="link-buyer" href="">
+          <span class="landing-card__badge">Buyers</span>
+          <h2 class="landing-card__title">Buyer Portal</h2>
+          <p class="landing-card__desc">
+            Browse the catalog, place and pay for orders, view your order
+            history, top up your wallet, and submit refund requests.
+          </p>
+        </a>
+        <a class="landing-card" id="link-ops" href="">
+          <span class="landing-card__badge">Operators</span>
+          <h2 class="landing-card__title">Ops Dashboard</h2>
+          <p class="landing-card__desc">
+            View payments, search transactions, process refund requests.
+          </p>
+        </a>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        var protocol = window.location.protocol;
+        var host = window.location.hostname;
+        var base = protocol + "//" + host;
+        document.getElementById("link-partner").href = base + ":3000";
+        document.getElementById("link-buyer").href = base + ":3002";
+        document.getElementById("link-ops").href = base + ":3001";
+      })();
+    </script>
+  </body>
+</html>

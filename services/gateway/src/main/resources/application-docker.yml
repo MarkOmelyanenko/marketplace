@@ -1,0 +1,49 @@
+# Profile for Docker Compose: route URIs use service names (not localhost)
+spring:
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: offers
+              uri: http://offer-service:8081
+              predicates:
+                - Path=/api/offers/**
+              filters:
+                - StripPrefix=2
+            - id: payments
+              uri: http://payments-service:8082
+              predicates:
+                - Path=/api/payments/**
+              filters:
+                - StripPrefix=2
+            - id: ops-refund-requests
+              uri: http://orders-service:8085
+              predicates:
+                - Path=/api/ops/refund-requests,/api/ops/refund-requests/**
+              filters:
+                - name: RewritePath
+                  args:
+                    regexp: /api/ops/refund-requests(?<segment>.*)
+                    replacement: /internal/refund-requests${segment}
+            - id: ops
+              uri: http://payments-service:8082
+              predicates:
+                - Path=/api/ops/**
+              filters:
+                - name: RewritePath
+                  args:
+                    regexp: /api/ops/(?<segment>.*)
+                    replacement: /internal/${segment}
+            - id: orders
+              uri: http://orders-service:8085
+              predicates:
+                - Path=/api/orders/**
+              filters:
+                - StripPrefix=2
+            - id: catalog
+              uri: http://offer-service:8081
+              predicates:
+                - Path=/api/catalog/**
+              filters:
+                - StripPrefix=2
