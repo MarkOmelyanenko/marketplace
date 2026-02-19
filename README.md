@@ -17,8 +17,6 @@ The system exposes three user-facing applications: a Partner Portal (sellers cre
 
 ## Screenshots
 
-Add PNG or JPG files to `docs/screenshots/` with the names below; the README will display them automatically.
-
 ### Landing
 ![Landing](docs/screenshots/landing.png)
 
