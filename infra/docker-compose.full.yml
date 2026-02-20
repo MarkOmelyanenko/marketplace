@@ -71,7 +71,7 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
-    mem_limit: 320m
+    mem_limit: 384m
     networks:
       - pet-network
 
@@ -93,7 +93,7 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
-    mem_limit: 352m
+    mem_limit: 448m
     networks:
       - pet-network
 
@@ -116,7 +116,7 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
-    mem_limit: 352m
+    mem_limit: 448m
     networks:
       - pet-network
 
@@ -134,7 +134,7 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-    mem_limit: 280m
+    mem_limit: 352m
     networks:
       - pet-network
 
@@ -150,7 +150,7 @@ services:
       - PROVIDER_WEBHOOK_SECRET=dev-secret
     depends_on:
       - payments-service
-    mem_limit: 280m
+    mem_limit: 320m
     networks:
       - pet-network
 
@@ -177,7 +177,7 @@ services:
         condition: service_started
       payments-service:
         condition: service_started
-    mem_limit: 352m
+    mem_limit: 448m
     networks:
       - pet-network
 
