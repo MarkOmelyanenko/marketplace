@@ -179,7 +179,7 @@
       </p>
 
       <div class="landing-cards">
-        <a class="landing-card" id="link-partner" href="" target="_blank" rel="noopener noreferrer">
+        <a class="landing-card" id="link-partner" href="/partner/" target="_blank" rel="noopener noreferrer">
           <span class="landing-card__badge">Sellers</span>
           <h2 class="landing-card__title">Partner Portal</h2>
           <p class="landing-card__desc">
@@ -187,7 +187,7 @@
             your wallet. Use AI suggestions to improve your descriptions.
           </p>
         </a>
-        <a class="landing-card" id="link-buyer" href="" target="_blank" rel="noopener noreferrer">
+        <a class="landing-card" id="link-buyer" href="/buyer/" target="_blank" rel="noopener noreferrer">
           <span class="landing-card__badge">Buyers</span>
           <h2 class="landing-card__title">Buyer Portal</h2>
           <p class="landing-card__desc">
@@ -195,7 +195,7 @@
             history, top up your wallet, and submit refund requests.
           </p>
         </a>
-        <a class="landing-card" id="link-ops" href="" target="_blank" rel="noopener noreferrer">
+        <a class="landing-card" id="link-ops" href="/ops/" target="_blank" rel="noopener noreferrer">
           <span class="landing-card__badge">Operators</span>
           <h2 class="landing-card__title">Ops Dashboard</h2>
           <p class="landing-card__desc">
@@ -205,13 +205,5 @@
       </div>
     </main>
 
-    <script>
-      (function () {
-        // Caddy reverse proxy: portals at /partner/, /buyer/, /ops/ (same host, works with Cloudflare Tunnel)
-        document.getElementById("link-partner").href = "/partner/";
-        document.getElementById("link-buyer").href = "/buyer/";
-        document.getElementById("link-ops").href = "/ops/";
-      })();
-    </script>
   </body>
 </html>

@@ -197,6 +197,16 @@ docker compose -f infra/docker-compose.full.yml logs cloudflared
 
 У виводі шукайте рядок на кшталт \`https://random-words-12345.trycloudflare.com\` — це публічний HTTPS-URL. Відкрийте його в браузері: лендінг на \`/\`, портали на \`/partner/\`, \`/buyer/\`, \`/ops/\`.
 
+**Важливо:** через тунель працює лише один домен (без порту). Не додавайте \`:3000\`, \`:3001\`, \`:3002\` до URL — це дасть таймаут. Портали лише за шляхами: \`/partner/\`, \`/buyer/\`, \`/ops/\`.
+
+**Якщо портали відкриваються, але сторінка порожня і в консолі браузера 404 на \`index-*.js\` / \`index-*.css\`** — образи порталів зібрані без base path. На сервері перезіберіть їх з поточним \`docker-compose.full.yml\` (у ньому задано \`VITE_BASE_PATH\` для кожного порталу):
+
+```bash
+cd ~/allegro-mini-platform
+docker compose -f infra/docker-compose.full.yml build --no-cache partner-portal ops-dashboard buyer-portal
+docker compose -f infra/docker-compose.full.yml up -d partner-portal ops-dashboard buyer-portal
+```
+
 Якщо тунель не потрібен, зупиніть контейнер:
 
 ```bash

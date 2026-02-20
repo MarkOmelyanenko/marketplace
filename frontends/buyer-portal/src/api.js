@@ -1,8 +1,15 @@
-// Empty string = same-origin /api (e.g. behind Caddy or Cloudflare Tunnel)
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL !== undefined
+// Use same-origin /api when on HTTPS (tunnel) or under /buyer/ to avoid Mixed Content
+function getApiBaseUrl() {
+  const build = import.meta.env.VITE_API_BASE_URL !== undefined
     ? import.meta.env.VITE_API_BASE_URL
     : "http://localhost:8080";
+  if (typeof window !== "undefined") {
+    if (window.location.protocol === "https:") return "";
+    if (/^\/(partner|buyer|ops)(\/|$)/.test(window.location.pathname)) return "";
+  }
+  return build;
+}
+const API_BASE_URL = getApiBaseUrl();
 
 function getBuyerId() {
   return localStorage.getItem("buyerId");
