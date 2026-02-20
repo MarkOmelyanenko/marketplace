@@ -45,10 +45,10 @@ services:
           "CMD-SHELL",
           "cd /opt/kafka/bin && ./kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1",
         ]
-      interval: 10s
-      timeout: 10s
-      retries: 12
-      start_period: 45s
+      interval: 15s
+      timeout: 15s
+      retries: 10
+      start_period: 60s
     mem_limit: 768m
     networks:
       - pet-network
@@ -114,7 +114,7 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
-    mem_limit: 280m
+    mem_limit: 320m
     networks:
       - pet-network
 
@@ -194,6 +194,8 @@ services:
     build:
       context: ../frontends
       dockerfile: partner-portal/Dockerfile
+      args:
+        VITE_API_BASE_URL: ${GATEWAY_PUBLIC_URL:-http://localhost:8080}
     container_name: pet-partner-portal
     ports:
       - "3000:80"
@@ -207,6 +209,8 @@ services:
     build:
       context: ../frontends
       dockerfile: ops-dashboard/Dockerfile
+      args:
+        VITE_API_BASE_URL: ${GATEWAY_PUBLIC_URL:-http://localhost:8080}
     container_name: pet-ops-dashboard
     ports:
       - "3001:80"

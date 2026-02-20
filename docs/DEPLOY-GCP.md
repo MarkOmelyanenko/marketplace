@@ -112,19 +112,19 @@ GROQ_API_KEY=your_groq_api_key_here
 
 Збережіть і вийдіть (Ctrl+O, Enter, Ctrl+X).
 
-### 3.3. URL API для buyer-portal (важливо для продакшену)
-Фронтенд buyer-portal збирається з `VITE_API_BASE_URL`. На VM потрібно вказати публічну адресу API (gateway).
+### 3.3. URL API для порталів (обовʼязково для роботи з інтернету)
+Усі три портали (Partner Portal, Ops Dashboard, Buyer Portal) збираються з `VITE_API_BASE_URL`. Якщо не вказати публічну адресу gateway, сторінки порталів відкриються, але запити до API підуть на `localhost:8080` (ваш компʼютер), тому портали будуть порожні або з помилками.
 
 Отримайте зовнішню IP VM:
 - GCP Console → Compute Engine → VM instances → **External IP** вашої інстанси.
 
-Приклад: якщо External IP = `34.88.123.45`, то перед збіркою виконайте:
+Перед збіркою обовʼязково виконайте (підставте свою IP замість `34.88.123.45`):
 
 ```bash
 export GATEWAY_PUBLIC_URL="http://34.88.123.45:8080"
 ```
 
-Підставте свою IP замість `34.88.123.45`. Ця змінна використовується при `docker compose build` (крок 4).
+Потім збирайте образы і запускайте стек (крок 4). Якщо вже запускали без цього — перезіберіть тільки портали і перезапустіть їх (див. нижче).
 
 ---
 
@@ -143,12 +143,13 @@ docker compose -f infra/docker-compose.full.yml build --no-cache
 docker compose -f infra/docker-compose.full.yml up -d
 ```
 
-**Якщо спочатку збираєте без публічного URL** (потім можна перезібрати тільки buyer-portal):
+**Якщо спочатку збирали без GATEWAY_PUBLIC_URL** — портали не будуть працювати з інтернету. Перезіберіть тільки портали і перезапустіть їх:
 
 ```bash
-cd ~/allegro-mini-platform
-docker compose -f infra/docker-compose.full.yml build --no-cache
-docker compose -f infra/docker-compose.full.yml up -d
+cd ~/allegro-mini-platform   # або ~/marketplace
+export GATEWAY_PUBLIC_URL="http://ВАША_EXTERNAL_IP:8080"
+docker compose -f infra/docker-compose.full.yml build --no-cache partner-portal ops-dashboard buyer-portal
+docker compose -f infra/docker-compose.full.yml up -d partner-portal ops-dashboard buyer-portal
 ```
 
 Перший запуск може зайняти 2–5 хвилин (Kafka healthcheck, старт сервісів). Статус:
@@ -187,7 +188,7 @@ docker compose -f infra/docker-compose.full.yml logs -f
 | Buyer Portal | http://EXTERNAL_IP:3002 |
 | Ops Dashboard | http://EXTERNAL_IP:3001 |
 
-Якщо buyer-portal збирали з `VITE_API_BASE_URL=http://EXTERNAL_IP:8080`, він коректно ходитиме в API з інтернету.
+Якщо всі три портали збирали з `GATEWAY_PUBLIC_URL=http://EXTERNAL_IP:8080`, вони коректно ходитимуть в API з інтернету. Інакше сторінки відкриються, але дані не завантажаться (API виклики йдуть на localhost).
 
 ---
 
