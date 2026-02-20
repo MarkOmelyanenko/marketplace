@@ -112,19 +112,15 @@ GROQ_API_KEY=your_groq_api_key_here
 
 Збережіть і вийдіть (Ctrl+O, Enter, Ctrl+X).
 
-### 3.3. URL API для порталів (обовʼязково для роботи з інтернету)
-Усі три портали (Partner Portal, Ops Dashboard, Buyer Portal) збираються з `VITE_API_BASE_URL`. Якщо не вказати публічну адресу gateway, сторінки порталів відкриються, але запити до API підуть на `localhost:8080` (ваш компʼютер), тому портали будуть порожні або з помилками.
+### 3.3. URL API для порталів
 
-Отримайте зовнішню IP VM:
-- GCP Console → Compute Engine → VM instances → **External IP** вашої інстанси.
+**Режим через Caddy (за замовчуванням):** Вхід у додаток — один хост на порту 80 (reverse proxy Caddy). Лендінг на `/`, портали на `/partner/`, `/buyer/`, `/ops/`, API на `/api/`. Портали збираються з **same-origin** API (`VITE_API_BASE_URL` порожній), тобто запити йдуть на `/api/...` того ж хоста. Це підходить і для доступу по IP, і для **Cloudflare Tunnel** (безкоштовний HTTPS і рандомний домен) — див. розділ 6.
 
-Перед збіркою та запуском обовʼязково виконайте (підставте свою IP замість `34.88.123.45`):
+**Режим без Caddy (прямі порти):** Якщо потрібно відкривати портали напряму по портах 3000, 3001, 3002, задайте публічну адресу gateway і перезіберіть портали з нею:
 
-```bash
-export GATEWAY_PUBLIC_URL="http://34.88.123.45:8080"
-```
-
-Ця змінна потрібна двічі: (1) для збірки порталів (щоб вони ходили в API по публічному URL); (2) для gateway (щоб CORS дозволяв запити з порталів на портах 3000/3001/3002 — інакше в браузері буде «Failed to fetch» через CORS). Можна додати її в `infra/.env` як `GATEWAY_PUBLIC_URL=http://ВАША_IP:8080`, тоді compose підхопить її при `up -d`. Потім збирайте образи і запускайте стек (крок 4). Якщо вже запускали без цього — перезіберіть портали, додайте змінну в .env і перезапустіть **gateway** і портали (див. нижче).
+- Отримайте **External IP** VM (GCP Console → Compute Engine → VM instances).
+- У `infra/.env` або перед збіркою: `GATEWAY_PUBLIC_URL=http://ВАША_IP:8080`.
+- Перезіберіть портали з `VITE_API_BASE_URL` (compose підхопить `GATEWAY_PUBLIC_URL`) і перезапустіть gateway та портали. CORS у gateway дозволить origins з портами 80, 3000, 3001, 3002.
 
 ---
 
@@ -134,20 +130,19 @@ export GATEWAY_PUBLIC_URL="http://34.88.123.45:8080"
 
 З директорії проєкту (корінь репо, не `infra/`):
 
-**Якщо вже знаєте External IP VM** (рекомендовано для доступу з інтернету):
+**Стандартний запуск** (вхід через Caddy на порту 80, портали на `/partner/`, `/buyer/`, `/ops/`):
 
 ```bash
 cd ~/allegro-mini-platform
-export GATEWAY_PUBLIC_URL="http://ВАША_EXTERNAL_IP:8080"
 docker compose -f infra/docker-compose.full.yml build --no-cache
 docker compose -f infra/docker-compose.full.yml up -d
 ```
 
-**Якщо спочатку збирали без GATEWAY_PUBLIC_URL або всюди «Failed to fetch» (CORS)** — додайте в `infra/.env` рядок `GATEWAY_PUBLIC_URL=http://ВАША_EXTERNAL_IP:8080`, перезіберіть портали та перезапустіть gateway і портали:
+Доступ: `http://EXTERNAL_IP/`, `http://EXTERNAL_IP/partner/`, тощо. Для **Cloudflare Tunnel** (HTTPS + безкоштовний домен) див. розділ 6.
+
+**Якщо потрібен доступ до порталів напряму по портах 3000/3001/3002** — задайте `GATEWAY_PUBLIC_URL` і перезіберіть портали та gateway:
 
 ```bash
-cd ~/allegro-mini-platform   # або ~/marketplace
-echo 'GATEWAY_PUBLIC_URL=http://ВАША_EXTERNAL_IP:8080' >> infra/.env
 export GATEWAY_PUBLIC_URL="http://ВАША_EXTERNAL_IP:8080"
 docker compose -f infra/docker-compose.full.yml build --no-cache gateway partner-portal ops-dashboard buyer-portal
 docker compose -f infra/docker-compose.full.yml up -d gateway partner-portal ops-dashboard buyer-portal
@@ -172,35 +167,73 @@ docker compose -f infra/docker-compose.full.yml logs -f
 
 Підставте **External IP** вашої VM (наприклад `34.88.123.45`).
 
-**Точка входу в програму** — головна сторінка з трьома посиланнями на портали:
+**Точка входу** — один хост на порту 80 (Caddy). Усі сервіси доступні за шляхами:
 
 | Що відкрити | URL |
 |-------------|-----|
-| **Головна сторінка (ландінг)** | http://EXTERNAL_IP або http://EXTERNAL_IP:80 |
-| API Gateway (health) | http://EXTERNAL_IP:8080/actuator/health |
+| **Головна сторінка (ландінг)** | http://EXTERNAL_IP/ |
+| **Partner Portal** | http://EXTERNAL_IP/partner/ |
+| **Buyer Portal** | http://EXTERNAL_IP/buyer/ |
+| **Ops Dashboard** | http://EXTERNAL_IP/ops/ |
+| API Gateway (health) | http://EXTERNAL_IP/api/... або http://EXTERNAL_IP:8080/actuator/health |
 
-На лендінгі є три посилання: **Портал партнерів** (3000), **Портал покупців** (3002), **Ops Dashboard** (3001). Користувач обирає потрібний портал і переходить за посиланням.
+На лендінгі три посилання ведуть на `/partner/`, `/buyer/`, `/ops/`. API виклики йдуть на той самий хост (`/api/...`), тому CORS не потрібен для цих запитів.
 
-Прямі посилання на портали (якщо потрібні окремо):
-
-| Сервіс | URL |
-|--------|-----|
-| Partner Portal | http://EXTERNAL_IP:3000 |
-| Buyer Portal | http://EXTERNAL_IP:3002 |
-| Ops Dashboard | http://EXTERNAL_IP:3001 |
-
-Якщо всі три портали збирали з `GATEWAY_PUBLIC_URL=http://EXTERNAL_IP:8080`, вони коректно ходитимуть в API з інтернету. Інакше сторінки відкриються, але дані не завантажаться (API виклики йдуть на localhost).
+Прямі порти (якщо потрібні): Partner 3000, Ops 3001, Buyer 3002, Gateway 8080 — тоді для роботи з інтернету потрібен `GATEWAY_PUBLIC_URL` і перезбірка порталів (див. 3.3).
 
 ---
 
-## 6. Опційно: статична IP та домен
+## 6. Опційно: HTTPS і безкоштовний домен (Cloudflare Tunnel)
+
+Через **Cloudflare Tunnel** можна отримати безкоштовний HTTPS і тимчасовий публічний URL виду `https://випадкова-назва.trycloudflare.com` без відкриття портів у файрволі та без власного домену.
+
+### Кроки
+
+1. **На VM встановіть cloudflared** (один раз):
+
+```bash
+# Ubuntu/Debian
+curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+sudo dpkg -i cloudflared.deb
+```
+
+2. **Запустіть стек з Caddy** (як у крокі 4). Caddy слухає порт 80 і проксує запити на лендінг, портали та API.
+
+3. **Запустіть тунель** (на VM):
+
+```bash
+cloudflared tunnel --url http://localhost:80
+```
+
+У консолі з’явиться рядок на кшталт:
+
+```
+Your quick Tunnel has been created! Visit it at:
+https://random-words-12345.trycloudflare.com
+```
+
+4. **Відкрийте цей URL у браузері.** Лендінг, `/partner/`, `/buyer/`, `/ops/` і API працюватимуть через HTTPS. Портали вже зібрані з same-origin API, тому додаткові налаштування не потрібні.
+
+5. **CORS для того ж домену вже дозволений.** Якщо потрібно явно вказати публічний URL (наприклад для логів), у `infra/.env` можна додати:
+
+```
+GATEWAY_PUBLIC_URL=https://ваш-тунель.trycloudflare.com
+```
+
+Потім перезапустіть gateway: `docker compose -f infra/docker-compose.full.yml up -d gateway`.
+
+**Примітка:** URL quick tunnel змінюється при кожному новому запуску `cloudflared`. Щоб мати сталий URL, можна створити **Named Tunnel** у Cloudflare та прив’язати власний домен або піддомен `*.cfargotunnel.com`.
+
+---
+
+## 7. Опційно: статична IP та власний домен
 
 - **Статична IP**: Compute Engine → **VPC network** → **IP addresses** → Reserve static address (прив’язати до VM), щоб IP не змінювався після перезапуску.
-- **Домен**: у DNS вкажіть A-запис на цю IP. Далі можна поставити Nginx/Caddy на VM і проксувати 80/443 на порти 3000, 3001, 3002, 8080 (тоді користувачі заходять через `https://yourdomain.com` без портів).
+- **Домен**: у DNS вкажіть A-запис на цю IP. Caddy вже проксує все на порту 80; для HTTPS можна додати в Caddy автоматичні сертифікати (Let’s Encrypt) або використати Cloudflare як proxy перед VM.
 
 ---
 
-## 7. Корисні команди на VM
+## 8. Корисні команди на VM
 
 ```bash
 # Статус контейнерів
@@ -221,7 +254,7 @@ docker compose -f infra/docker-compose.full.yml up -d --build
 
 ---
 
-## 8. Вартість та бюджет
+## 9. Вартість та бюджет
 
 - **e2-small** у Європі — орієнтовно $13–15/місяць.
 - Рекомендовано: **Billing** → **Budgets & alerts** — створити бюджет (наприклад $20) і налаштувати сповіщення, щоб не перевищити кредити.

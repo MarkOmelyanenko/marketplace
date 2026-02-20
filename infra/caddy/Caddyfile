@@ -1,0 +1,39 @@
+# Reverse proxy for Allegro Mini Platform.
+# Use with Cloudflare Tunnel: cloudflared tunnel --url http://localhost:80
+# Then everything is available at https://<random>.trycloudflare.com/
+
+:80 {
+  # API gateway
+  handle /api/* {
+    reverse_proxy gateway:8080
+  }
+
+  # Partner portal at /partner/
+  handle_path /partner/* {
+    reverse_proxy partner-portal:80
+  }
+  handle /partner {
+    redir /partner/ permanent
+  }
+
+  # Buyer portal at /buyer/
+  handle_path /buyer/* {
+    reverse_proxy buyer-portal:80
+  }
+  handle /buyer {
+    redir /buyer/ permanent
+  }
+
+  # Ops dashboard at /ops/
+  handle_path /ops/* {
+    reverse_proxy ops-dashboard:80
+  }
+  handle /ops {
+    redir /ops/ permanent
+  }
+
+  # Landing at /
+  handle {
+    reverse_proxy landing:80
+  }
+}

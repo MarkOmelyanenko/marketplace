@@ -1,5 +1,8 @@
+// Empty string = same-origin /api (e.g. behind Caddy or Cloudflare Tunnel)
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+  import.meta.env.VITE_API_BASE_URL !== undefined
+    ? import.meta.env.VITE_API_BASE_URL
+    : "http://localhost:8080";
 
 function getOpsToken() {
   return localStorage.getItem("opsToken") || "ops-dev";

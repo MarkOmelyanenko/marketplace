@@ -207,12 +207,10 @@
 
     <script>
       (function () {
-        var protocol = window.location.protocol;
-        var host = window.location.hostname;
-        var base = protocol + "//" + host;
-        document.getElementById("link-partner").href = base + ":3000";
-        document.getElementById("link-buyer").href = base + ":3002";
-        document.getElementById("link-ops").href = base + ":3001";
+        // Caddy reverse proxy: portals at /partner/, /buyer/, /ops/ (same host, works with Cloudflare Tunnel)
+        document.getElementById("link-partner").href = "/partner/";
+        document.getElementById("link-buyer").href = "/buyer/";
+        document.getElementById("link-ops").href = "/ops/";
       })();
     </script>
   </body>

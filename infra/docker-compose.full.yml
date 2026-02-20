@@ -186,9 +186,25 @@ services:
       context: ../frontends/landing
       dockerfile: Dockerfile
     container_name: pet-landing
+    # Port 80 is exposed via caddy (reverse proxy) for single-entry + Cloudflare Tunnel
+    mem_limit: 48m
+    networks:
+      - pet-network
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: pet-caddy
     ports:
       - "80:80"
-    mem_limit: 48m
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - landing
+      - gateway
+      - partner-portal
+      - ops-dashboard
+      - buyer-portal
+    mem_limit: 32m
     networks:
       - pet-network
 
@@ -197,7 +213,9 @@ services:
       context: ../frontends
       dockerfile: partner-portal/Dockerfile
       args:
-        VITE_API_BASE_URL: ${GATEWAY_PUBLIC_URL:-http://localhost:8080}
+        # Same-origin /api when behind Caddy; or set GATEWAY_PUBLIC_URL for direct access
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-${GATEWAY_PUBLIC_URL:-}}
+        VITE_BASE_PATH: /partner
     container_name: pet-partner-portal
     ports:
       - "3000:80"
@@ -212,7 +230,8 @@ services:
       context: ../frontends
       dockerfile: ops-dashboard/Dockerfile
       args:
-        VITE_API_BASE_URL: ${GATEWAY_PUBLIC_URL:-http://localhost:8080}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-${GATEWAY_PUBLIC_URL:-}}
+        VITE_BASE_PATH: /ops
     container_name: pet-ops-dashboard
     ports:
       - "3001:80"
@@ -227,8 +246,8 @@ services:
       context: ../frontends
       dockerfile: buyer-portal/Dockerfile
       args:
-        # На GCP задайте GATEWAY_PUBLIC_URL=http://EXTERNAL_IP:8080 перед build
-        VITE_API_BASE_URL: ${GATEWAY_PUBLIC_URL:-http://localhost:8080}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-${GATEWAY_PUBLIC_URL:-}}
+        VITE_BASE_PATH: /buyer
     container_name: pet-buyer-portal
     ports:
       - "3002:80"
