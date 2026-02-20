@@ -60,3 +60,7 @@ replay_pid*
 
 # --- Optional: local Docker override (uncomment if you use one) ---
 # docker-compose.override.yml
+
+# --- Docs (local / not to commit) ---
+docs/deploy-gcp.md
+docs/DEPLOY-GCP.md
