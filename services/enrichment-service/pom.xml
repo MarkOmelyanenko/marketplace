@@ -61,6 +61,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-kafka-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<!-- Avoid flaky download of re2j from Maven Central on GCP/CI -->
+				<exclusion>
+					<groupId>com.google.re2j</groupId>
+					<artifactId>re2j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

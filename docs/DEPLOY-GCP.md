@@ -160,6 +160,8 @@ docker compose -f infra/docker-compose.full.yml logs -f
 
 (Зупинити логи: Ctrl+C.)
 
+**Якщо збірка падає з помилкою** типу `Remote host terminated the handshake` або `Could not transfer artifact ... from/to central` — це тимчасова мережева помилка при завантаженні залежностей з Maven Central. Просто повторіть команди `build` та `up`. У проєкті для enrichment-service виключено залежність re2j (test), щоб зменшити ймовірність таких падінь.
+
 ---
 
 ## 5. Перевірка доступу
