@@ -9,7 +9,7 @@ spring:
     name: gateway
   cloud:
     gateway:
-      # CORS: allow frontends (partner portal, buyer portal, ops dashboard)
+      # CORS: allow frontends; extra origins from GATEWAY_PUBLIC_URL (e.g. http://IP:3000,IP:3001,IP:3002) set in CorsConfig.java
       globalcors:
         cors-configurations:
           "[/**]":

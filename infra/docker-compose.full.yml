@@ -64,6 +64,8 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pet-postgres:5432/postgres
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      # For CORS: set GATEWAY_PUBLIC_URL=http://EXTERNAL_IP:8080 so portals on :3000/:3001/:3002 are allowed
+      - GATEWAY_PUBLIC_URL=${GATEWAY_PUBLIC_URL:-}
     depends_on:
       postgres:
         condition: service_healthy

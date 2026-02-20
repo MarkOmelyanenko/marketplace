@@ -118,13 +118,13 @@ GROQ_API_KEY=your_groq_api_key_here
 Отримайте зовнішню IP VM:
 - GCP Console → Compute Engine → VM instances → **External IP** вашої інстанси.
 
-Перед збіркою обовʼязково виконайте (підставте свою IP замість `34.88.123.45`):
+Перед збіркою та запуском обовʼязково виконайте (підставте свою IP замість `34.88.123.45`):
 
 ```bash
 export GATEWAY_PUBLIC_URL="http://34.88.123.45:8080"
 ```
 
-Потім збирайте образы і запускайте стек (крок 4). Якщо вже запускали без цього — перезіберіть тільки портали і перезапустіть їх (див. нижче).
+Ця змінна потрібна двічі: (1) для збірки порталів (щоб вони ходили в API по публічному URL); (2) для gateway (щоб CORS дозволяв запити з порталів на портах 3000/3001/3002 — інакше в браузері буде «Failed to fetch» через CORS). Можна додати її в `infra/.env` як `GATEWAY_PUBLIC_URL=http://ВАША_IP:8080`, тоді compose підхопить її при `up -d`. Потім збирайте образи і запускайте стек (крок 4). Якщо вже запускали без цього — перезіберіть портали, додайте змінну в .env і перезапустіть **gateway** і портали (див. нижче).
 
 ---
 
@@ -143,13 +143,14 @@ docker compose -f infra/docker-compose.full.yml build --no-cache
 docker compose -f infra/docker-compose.full.yml up -d
 ```
 
-**Якщо спочатку збирали без GATEWAY_PUBLIC_URL** — портали не будуть працювати з інтернету. Перезіберіть тільки портали і перезапустіть їх:
+**Якщо спочатку збирали без GATEWAY_PUBLIC_URL або всюди «Failed to fetch» (CORS)** — додайте в `infra/.env` рядок `GATEWAY_PUBLIC_URL=http://ВАША_EXTERNAL_IP:8080`, перезіберіть портали та перезапустіть gateway і портали:
 
 ```bash
 cd ~/allegro-mini-platform   # або ~/marketplace
+echo 'GATEWAY_PUBLIC_URL=http://ВАША_EXTERNAL_IP:8080' >> infra/.env
 export GATEWAY_PUBLIC_URL="http://ВАША_EXTERNAL_IP:8080"
-docker compose -f infra/docker-compose.full.yml build --no-cache partner-portal ops-dashboard buyer-portal
-docker compose -f infra/docker-compose.full.yml up -d partner-portal ops-dashboard buyer-portal
+docker compose -f infra/docker-compose.full.yml build --no-cache gateway partner-portal ops-dashboard buyer-portal
+docker compose -f infra/docker-compose.full.yml up -d gateway partner-portal ops-dashboard buyer-portal
 ```
 
 Перший запуск може зайняти 2–5 хвилин (Kafka healthcheck, старт сервісів). Статус:
