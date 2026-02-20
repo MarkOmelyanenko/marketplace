@@ -162,6 +162,8 @@ docker compose -f infra/docker-compose.full.yml logs -f
 
 **Якщо збірка падає з помилкою** типу `Remote host terminated the handshake` або `Could not transfer artifact ... from/to central` — це тимчасова мережева помилка при завантаженні залежностей з Maven Central. Просто повторіть команди `build` та `up`. У проєкті для enrichment-service виключено залежність re2j (test), щоб зменшити ймовірність таких падінь.
 
+**Якщо контейнер `pet-kafka` падає з exit code 137** — це OOM (його вбиває система через нестачу пам’яті). У compose для Kafka вже збільшено `mem_limit` (384m) і зменшено ліміти інших сервісів, щоб укластися в 2 GB. Якщо на e2-small Kafka знову падає з 137, змініть тип VM на **e2-medium** (4 GB) у GCP Console (Stop → Edit → Machine type → e2-medium → Save → Start).
+
 ---
 
 ## 5. Перевірка доступу

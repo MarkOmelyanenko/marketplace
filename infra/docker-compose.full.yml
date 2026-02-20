@@ -16,7 +16,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    mem_limit: 100m
+    mem_limit: 64m
     networks:
       - pet-network
 
@@ -49,7 +49,7 @@ services:
       timeout: 10s
       retries: 12
       start_period: 45s
-    mem_limit: 320m
+    mem_limit: 384m
     networks:
       - pet-network
 
@@ -69,7 +69,7 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
-    mem_limit: 256m
+    mem_limit: 240m
     networks:
       - pet-network
 
@@ -114,7 +114,7 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
-    mem_limit: 256m
+    mem_limit: 240m
     networks:
       - pet-network
 
@@ -175,7 +175,7 @@ services:
         condition: service_started
       payments-service:
         condition: service_started
-    mem_limit: 256m
+    mem_limit: 240m
     networks:
       - pet-network
 
