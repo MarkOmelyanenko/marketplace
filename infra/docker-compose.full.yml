@@ -63,7 +63,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pet-postgres:5432/postgres
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=pet-kafka:9092
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
       postgres:
         condition: service_healthy
@@ -84,7 +84,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pet-postgres:5432/offer_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=pet-kafka:9092
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - PAYMENT_SERVICE_URL=http://payments-service:8082
     depends_on:
       postgres:
@@ -106,7 +106,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pet-postgres:5432/payment_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=pet-kafka:9092
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - PROVIDER_BASE_URL=http://provider-simulator:8084
       - PROVIDER_WEBHOOK_SECRET=dev-secret
     depends_on:
@@ -126,7 +126,7 @@ services:
     ports:
       - "8083:8083"
     environment:
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=pet-kafka:9092
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - GROQ_API_KEY=${GROQ_API_KEY:-}
       - GROQ_MODEL=${GROQ_MODEL:-llama-3.1-8b-instant}
     depends_on:
@@ -163,7 +163,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pet-postgres:5432/order_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=pet-kafka:9092
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - OFFER_SERVICE_URL=http://offer-service:8081
       - PAYMENT_SERVICE_URL=http://payments-service:8082
     depends_on:
