@@ -208,6 +208,16 @@ services:
     networks:
       - pet-network
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: pet-cloudflared
+    command: tunnel --url http://caddy:80
+    depends_on:
+      - caddy
+    restart: unless-stopped
+    networks:
+      - pet-network
+
   partner-portal:
     build:
       context: ../frontends

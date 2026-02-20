@@ -185,44 +185,25 @@ docker compose -f infra/docker-compose.full.yml logs -f
 
 ## 6. Опційно: HTTPS і безкоштовний домен (Cloudflare Tunnel)
 
-Через **Cloudflare Tunnel** можна отримати безкоштовний HTTPS і тимчасовий публічний URL виду `https://випадкова-назва.trycloudflare.com` без відкриття портів у файрволі та без власного домену.
+**cloudflared** уже входить у стек і запускається разом з іншими контейнерами. Тунель дає безкоштовний HTTPS і публічний URL виду `https://випадкова-назва.trycloudflare.com` без відкриття портів у файрволі.
 
-### Кроки
+### Як отримати URL
 
-1. **На VM встановіть cloudflared** (один раз):
-
-```bash
-# Ubuntu/Debian
-curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-sudo dpkg -i cloudflared.deb
-```
-
-2. **Запустіть стек з Caddy** (як у крокі 4). Caddy слухає порт 80 і проксує запити на лендінг, портали та API.
-
-3. **Запустіть тунель** (на VM):
+Після `docker compose ... up -d` перегляньте логи контейнера:
 
 ```bash
-cloudflared tunnel --url http://localhost:80
+docker compose -f infra/docker-compose.full.yml logs cloudflared
 ```
 
-У консолі з’явиться рядок на кшталт:
+У виводі шукайте рядок на кшталт \`https://random-words-12345.trycloudflare.com\` — це публічний HTTPS-URL. Відкрийте його в браузері: лендінг на \`/\`, портали на \`/partner/\`, \`/buyer/\`, \`/ops/\`.
 
-```
-Your quick Tunnel has been created! Visit it at:
-https://random-words-12345.trycloudflare.com
-```
+Якщо тунель не потрібен, зупиніть контейнер:
 
-4. **Відкрийте цей URL у браузері.** Лендінг, `/partner/`, `/buyer/`, `/ops/` і API працюватимуть через HTTPS. Портали вже зібрані з same-origin API, тому додаткові налаштування не потрібні.
-
-5. **CORS для того ж домену вже дозволений.** Якщо потрібно явно вказати публічний URL (наприклад для логів), у `infra/.env` можна додати:
-
-```
-GATEWAY_PUBLIC_URL=https://ваш-тунель.trycloudflare.com
+```bash
+docker compose -f infra/docker-compose.full.yml stop cloudflared
 ```
 
-Потім перезапустіть gateway: `docker compose -f infra/docker-compose.full.yml up -d gateway`.
-
-**Примітка:** URL quick tunnel змінюється при кожному новому запуску `cloudflared`. Щоб мати сталий URL, можна створити **Named Tunnel** у Cloudflare та прив’язати власний домен або піддомен `*.cfargotunnel.com`.
+**Примітка:** URL quick tunnel змінюється при кожному перезапуску контейнера `cloudflared`. Для сталого URL можна налаштувати **Named Tunnel** у Cloudflare та власний домен або піддомен `*.cfargotunnel.com`.
 
 ---
 
@@ -242,8 +223,9 @@ docker compose -f infra/docker-compose.full.yml ps
 # Логи всіх сервісів
 docker compose -f infra/docker-compose.full.yml logs -f
 
-# Логи одного сервісу
+# Логи одного сервісу (gateway, cloudflared тощо)
 docker compose -f infra/docker-compose.full.yml logs -f gateway
+docker compose -f infra/docker-compose.full.yml logs cloudflared
 
 # Зупинити все
 docker compose -f infra/docker-compose.full.yml down
