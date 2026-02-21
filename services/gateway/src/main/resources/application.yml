@@ -9,7 +9,7 @@ spring:
     name: gateway
   cloud:
     gateway:
-      # CORS: allow frontends; extra origins from GATEWAY_PUBLIC_URL (e.g. http://IP:3000,IP:3001,IP:3002) set in CorsConfig.java
+      # CORS: allow frontends. For Cloudflare Tunnel set GATEWAY_PUBLIC_URL=https://your-tunnel.trycloudflare.com
       globalcors:
         cors-configurations:
           "[/**]":
@@ -17,6 +17,7 @@ spring:
               - "http://localhost:3000"
               - "http://localhost:3001"
               - "http://localhost:3002"
+              - "${GATEWAY_PUBLIC_URL:http://localhost:8080}"
             allowedMethods:
               - GET
               - POST
